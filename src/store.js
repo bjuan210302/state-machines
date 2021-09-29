@@ -4,7 +4,15 @@ const store = createStore({
    state:{
        statesQ: '',
        inputsS: '',
-       outputsR: ''
+       outputsR: '',
+       machineType: false //false for Mealy, false for Moore
+   },
+
+   computed:{
+        getMachineType(){
+            console.log('returned ' + this.state.machineType)
+           return this.state.machineType
+        }
    },
 
    mutations:{
@@ -18,7 +26,11 @@ const store = createStore({
 
     setOutputsR(state, value){
         state.outputsR = value
-    }
+    },
+
+    setMachineType(state, value){
+        state.machineType = value
+    },
    }
 })
 

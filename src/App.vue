@@ -7,43 +7,22 @@
       <div class="col-6 bg-light">
 
         <DictionaryInput></DictionaryInput>
-
-        <div class="container p-2">
-
-          <table class="table table-dark">
-            <thead>
-              <tr >
-                <th class="table-dark">State</th>
-                <th class="table-dark" v-for="sinput in inputsS" :key="sinput"> {{ sinput }}</th>
-                <th class="table-dark">Output</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr class="table-dark" v-for="qstate in statesQ" :key="qstate">
-                <th class="table-dark">{{ qstate }}</th>
-                
-                <th v-for="sinput in inputsS" :key="sinput" class="table-dark">
-                  <input type="text" class="form-control">
-                </th>
-
-                <th class="table-dark">
-                  <input type="text" class="form-control table-dark">
-                </th>
-                
-              </tr>
-            </tbody>
-          </table>
-
+        
+        <div v-if="machineType">
+          <MooreMachineTable ref="machineTable"></MooreMachineTable>
+        </div>
+        <div v-else>
+          <MealyMachineTable ref="machineTable"></MealyMachineTable>
         </div>
 
+        <button @click="$refs.machineTable.parseTable()">Print parsed</button>
       </div>
 
       <div class="col-6 bg-secondary">
         
       </div>
 
-    </div>
+    </div>  
     <!--Inputs-->
     
 
@@ -55,43 +34,30 @@
 <script>
 import MainNavBar from './components/MainNavBar.vue'
 import DictionaryInput from './components/DictionaryInput.vue'
+import MooreMachineTable from './components/MooreMachineTable.vue'
+import MealyMachineTable from './components/MealyMachineTable.vue'
 
 export default {
   name: 'App',
 
   components: {
     MainNavBar,
-    DictionaryInput
+    DictionaryInput,
+    MooreMachineTable,
+    MealyMachineTable
   },
 
   computed:{
 
-    statesQ: {
+    machineType: {
       get () {
-        return this.$store.state.statesQ.replace(/\s/g, '').split(',').filter(String)
+        return this.$store.state.machineType
       },
       set (value) {
-        this.$store.commit('setStatesQ', value)
+        this.$store.commit('setMachineType', value)
       }
     },
-
-    inputsS: {
-      get () {
-        return this.$store.state.inputsS.replace(/\s/g, '').split(',').filter(String)
-      },
-      set (value) {
-        this.$store.commit('setInputsS', value)
-      }
-    },
-
-    outputsR: {
-      get () {
-        return this.$store.state.outputsR.replace(/\s/g, '').split(',').filter(String)
-      },
-      set (value) {
-        this.$store.commit('setOutputsR', value)
-      }
-    }
+    
         
   }
 
