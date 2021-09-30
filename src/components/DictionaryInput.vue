@@ -31,27 +31,18 @@ export default {
     computed:{
 
         statesQ: {
-            get () {
-                return this.$store.state.statesQ
-            },
             set (value) {
                 this.$store.commit('setStatesQ', value)
             }
         },
 
         inputsS: {
-            get () {
-                return this.$store.state.inputsS
-            },
             set (value) {
                 this.$store.commit('setInputsS', value)
             }
         },
 
         outputsR: {
-            get () {
-                return this.$store.state.outputsR
-            },
             set (value) {
                 this.$store.commit('setOutputsR', value)
             }

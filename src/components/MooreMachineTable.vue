@@ -5,16 +5,16 @@
             <thead>
               <tr >
                 <th class="table-dark">State</th>
-                <th class="table-dark" v-for="sinput in inputsS" :key="sinput"> {{ sinput }}</th>
+                <th class="table-dark" v-for="sinput in inputsSchild" :key="sinput"> {{ sinput }}</th>
                 <th class="table-dark">Output</th>
               </tr>
             </thead>
 
             <tbody>
-              <tr class="table-dark" v-for="(qstate, index) in statesQ" :key="qstate">
+              <tr class="table-dark" v-for="(qstate, index) in statesQchild" :key="qstate">
                 <th class="table-dark" :id="'statename-' + index">{{ qstate }}</th>
                 
-                <th v-for="(sinput, index2) in inputsS" :key="sinput" class="table-dark">
+                <th v-for="(sinput, index2) in inputsSchild" :key="sinput" class="table-dark">
                   <input type="text" class="form-control" :id="'nextstate-' + index + ',' + index2">
                 </th>
 
@@ -32,58 +32,35 @@
 <script>
 export default {
 
+    props:['statesQchild','inputsSchild','outputsRchild'],
+
     methods:{
 
         parseTable(){
+
             var rows = document.getElementById('mooretable').tBodies[0].rows
 
-            var parsedArray = []
+            var parsedTable = {}
 
             for (var i = 0; i < rows.length; i++) {
 
                 var staterow = {};
+                var stateid = document.getElementById('statename-' + i).innerHTML
 
-                staterow['statename'] = document.getElementById('statename-' + i).innerHTML
                 staterow['stateoutput'] = document.getElementById('stateoutput-' + i).value
 
                 //Ends at row.cells.length-1 because we already have the value of the last cell (stateoutput)
                 for (var j = 0; j < rows[i].cells.length - 2; j++) {
                     staterow['sucesor-' + j] = document.getElementById('nextstate-' + i + ',' + j).value
                 }
-                console.log(staterow)
-                parsedArray.push(staterow)
+
+                parsedTable[stateid] = staterow
+
             }
+
+            this.$store.commit('setParsedTable', parsedTable)
         }
 
-    },
-
-    computed: {
-        statesQ: {
-            get () {
-                return this.$store.state.statesQ.replace(/\s/g, '').split(',').filter(String)
-            },
-            set (value) {
-                this.$store.commit('setStatesQ', value)
-            }
-        },
-
-    inputsS: {
-            get () {
-                return this.$store.state.inputsS.replace(/\s/g, '').split(',').filter(String)
-            },
-            set (value) {
-                this.$store.commit('setInputsS', value)
-            }
-        },
-
-    outputsR: {
-            get () {
-                return this.$store.state.outputsR.replace(/\s/g, '').split(',').filter(String)
-            },
-            set (value) {
-                this.$store.commit('setOutputsR', value)
-            }
-        }   
     }
     
 }

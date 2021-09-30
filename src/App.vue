@@ -4,29 +4,32 @@
 
     <div class="d-flex flex-row h-75 justify-content-start">
 
+      <!--Inputs-->
       <div class="col-6 bg-light">
 
         <DictionaryInput></DictionaryInput>
         
         <div v-if="machineType">
-          <MooreMachineTable ref="machineTable"></MooreMachineTable>
+          <MooreMachineTable ref="machineTable"
+          :statesQchild="statesQ" :inputsSchild="inputsS"></MooreMachineTable>
         </div>
         <div v-else>
-          <MealyMachineTable ref="machineTable"></MealyMachineTable>
+          <MealyMachineTable ref="machineTable"
+          :statesQchild="statesQ" :inputsSchild="inputsS"></MealyMachineTable>
         </div>
 
         <button @click="$refs.machineTable.parseTable()">Print parsed</button>
+        <button @click="getReachableStates">Calculate reachable states</button>
+
       </div>
 
+      <!--Outputs-->
       <div class="col-6 bg-secondary">
-        
+        <pre> {{parsedTable}} </pre>
       </div>
 
     </div>  
-    <!--Inputs-->
-    
 
-    <!--Outputs-->
   </div>
 
 </template>
@@ -47,9 +50,32 @@ export default {
     MealyMachineTable
   },
 
+  methods:{
+    getReachableStates(){
+      this.$store.commit('getReachableStates')
+    }
+  },
   computed:{
 
-    machineType: {
+    statesQ: {
+      get () {
+        return this.$store.state.statesQ
+      }
+    },
+
+    inputsS: {
+      get () {
+        return this.$store.state.inputsS
+      }
+    },
+
+    outputsR: {
+      get () {
+        return this.$store.state.outputsR
+      }
+    },
+
+    machineType:{
       get () {
         return this.$store.state.machineType
       },
@@ -58,6 +84,11 @@ export default {
       }
     },
     
+    parsedTable:{
+      get () {
+        return JSON.stringify(this.$store.state.parsedTable, undefined, 2)
+      }
+    }
         
   }
 
