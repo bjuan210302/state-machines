@@ -1,6 +1,7 @@
 import { createStore } from "vuex" 
 import { calcRelatedEquivalentMachine } from './machineFunctions.js'
 import { calcMinimumEquivalentMachine } from './machineFunctions.js'
+//import { mealy } from './temp/parsedTables.js'
 
 const store = createStore({
    state:{
@@ -12,7 +13,7 @@ const store = createStore({
        minimumEquivalentMachine: [],
 
        machineType: false, //false for Mealy, true for Moore
-       parsedTable:  {} 
+       parsedTable: {}
       
    },
 

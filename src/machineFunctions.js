@@ -18,8 +18,10 @@ export function calcMinimumEquivalentMachine(parsedTable, machineType) {
     var statesOutputs = extractStateOutputs(related, machineType)
     var p0 = (machineType) ? calcP0Moore(statesOutputs) : calcP0Mealy(statesOutputs)
 
-    return findpf(statesSuccessors, p0)
+    var pf = findpf(statesSuccessors, p0)
 
+    return assemble(pf, statesSuccessors, statesOutputs, machineType)
+    
 }
 
 function calcReachableStates(parsedTable, machineType) {
@@ -88,7 +90,7 @@ function findpf(stateSucessors, pi) {
         var blocktoProccess = block.slice()
 
         do {
-            
+
             var lastKey = ''
 
             for (var i = 0; i < blocktoProccess.length;) {
@@ -140,6 +142,78 @@ function shouldBeInSameBlock(successors1, successors2, partition) {
     }
 
     return flag;
+}
+
+function assemble(pf, statesSuccessors, statesOutputs, machineType){
+
+    if (machineType) return mooreAssembler(pf, statesSuccessors, statesOutputs)
+    else return mealyAssembler(pf, statesSuccessors, statesOutputs)
+
+}
+
+function mooreAssembler(pf, statesSuccessors, statesOutputs){
+    var machine = {}
+
+    Object.values(pf).forEach(function(value, i){
+        var representator = value[0]
+        machine['q'+i] = {}
+        machine['q'+i].stateoutput = statesOutputs[representator]
+
+        var aux = statesSuccessors[representator]
+        aux.forEach(function(suc, j){
+            machine['q'+i].state = value
+
+            //This line finds the key of the successor block of this state
+            //Doing this to put the key as a the successor instead of the array itself
+            var succStateKey = Object.keys(pf).find(
+                key => areArraysIdentical(findBlockOf(suc, pf), pf[key])
+            
+            )
+            machine['q'+i]['sucesor-' + j] = 'q'+succStateKey
+        })
+    })
+
+    return machine
+}
+
+function mealyAssembler(pf, statesSuccessors, statesOutputs){
+    var machine = {}
+    
+
+    Object.values(pf).forEach(function(value, i){
+        var representator = value[0]
+        machine['q'+i] = {}
+        var aux = statesSuccessors[representator]
+        aux.forEach(function(suc, j){
+            machine['q'+i].state = value
+
+            //This line finds the key of the successor block of this state
+            //Doing this to put the key as a the successor instead of the array itself
+            var succStateKey = Object.keys(pf).find(
+                key => areArraysIdentical(findBlockOf(suc, pf), pf[key])
+            
+            )
+            machine['q'+i]['sucesor-' + j] = [
+                'q'+succStateKey,
+                statesOutputs[representator][j]
+            ]
+        })
+
+    })
+
+    return machine
+}
+
+function findBlockOf(state, pf){
+    var ret = null
+
+    Object.values(pf).forEach(function(block){
+        if(block.includes(state)){
+            ret = block
+        }
+    })
+
+    return ret
 }
 
 /**
