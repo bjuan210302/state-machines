@@ -19,7 +19,7 @@
         </div>
 
         <button @click="$refs.machineTable.parseTable()">Print parsed</button>
-        <button @click="getReachableStates">Calculate reachable states</button>
+        <button @click="calcOutputs">Calculate</button>
 
       </div>
 
@@ -51,8 +51,13 @@ export default {
   },
 
   methods:{
-    getReachableStates(){
-      this.$store.commit('getReachableStates')
+    calcOutputs(){
+      this.$store.commit('setRelatedEquivalentMachine')
+      this.setMinimumEquivalentMachine()
+    },
+    setMinimumEquivalentMachine(){
+      this.$store.commit('setMinimumEquivalentMachine')
+      console.log(JSON.stringify(this.$store.state.minimumEquivalentMachine, undefined, 2));
     }
   },
   computed:{

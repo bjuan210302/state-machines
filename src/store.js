@@ -1,14 +1,18 @@
 import { createStore } from "vuex" 
-import { calcReachableStates } from './machineFunctions.js'
+import { calcRelatedEquivalentMachine } from './machineFunctions.js'
+import { calcMinimumEquivalentMachine } from './machineFunctions.js'
 
 const store = createStore({
    state:{
        statesQ: [],
        inputsS: [],
        outputsR: [],
-       reachableStates: [],
-       machineType: false, //false for Mealy, false for Moore
-       parsedTable:  {}
+
+       relatedequivalentMachine: {},
+       minimumEquivalentMachine: [],
+
+       machineType: false, //false for Mealy, true for Moore
+       parsedTable:  {} 
       
    },
 
@@ -31,8 +35,12 @@ const store = createStore({
         state.outputsR = value.replace(/\s/g, '').split(',').filter(String)
     },
 
-    getReachableStates(state){
-        state.accessibleStates = calcReachableStates(this.state.parsedTable, this.state.machineType);
+    setRelatedEquivalentMachine(state){
+        state.relatedequivalentMachine = calcRelatedEquivalentMachine(state.parsedTable, state.machineType);
+    },
+
+    setMinimumEquivalentMachine(state){
+        state.minimumEquivalentMachine = calcMinimumEquivalentMachine(state.parsedTable, state.machineType);
     },
 
     setMachineType(state, value){
