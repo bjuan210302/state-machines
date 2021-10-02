@@ -1,7 +1,8 @@
 <template>
   <div class="row bg-dark align-items-start py-3 px-0">
-      <div class="col-6 px-0">
-        <div class="btn-group col-12 px-3" role="group">
+    <div class="col-md-6 px-0" align="center">
+      <div class="row btn-group col-12 px-3 align-items-start" role="group">
+        <div class="col-sm-6 px-0">
           <input
             type="checkbox"
             class="btn-check"
@@ -11,10 +12,12 @@
             false-value="1"
             true-value="0"
           />
-          <label class="btn btn-outline-light" for="btnmealy"
+          <label class="btn btn-outline-light col-sm-12 col-12" for="btnmealy"
             >Mealy Machine</label
           >
+        </div>
 
+        <div class="col-sm-6 px-0">
           <input
             type="checkbox"
             class="btn-check"
@@ -24,15 +27,16 @@
             false-value="0"
             true-value="1"
           />
-          <label class="btn btn-outline-light" for="btnmoore"
+          <label class="btn btn-outline-light col-sm-12 col-12" for="btnmoore"
             >Moore Machine</label
           >
         </div>
       </div>
-
-      <h4 class="col-6 text-light h-100 my-0" align="center"> Results</h4>
-
     </div>
+    <div class="d-none d-sm-none d-md-block col-6 px-0" align="center">
+      <h4 class="col-6 text-light my-0" align="center">Results</h4>
+    </div>
+  </div>
 </template>
 
 <script>

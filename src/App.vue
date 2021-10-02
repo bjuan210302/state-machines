@@ -3,7 +3,7 @@
     <MachineButtons></MachineButtons>
 
     <!--Inputs-->
-    <div class="col-6 bg-light h-100">
+    <div class="col-md-6 col-sm-12 bg-light h-100">
       <DictionaryInput></DictionaryInput>
 
       <div v-if="machineType">
@@ -27,7 +27,12 @@
     </div>
 
     <!--Outputs-->
-    <div class="col-6 bg-secondary">
+    <div class="col-md-6 col-sm-12 bg-secondary h-100">
+
+      <div class="row d-block d-sm-block d-md-none bg-dark text-light">
+        <h2 class="col py-3" align="center">Results</h2>
+      </div>
+
       <div class="row">
         <div v-if="renderOutput">
           <div class="alert alert-secondary my-2" role="alert">
