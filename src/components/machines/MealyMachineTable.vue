@@ -1,7 +1,7 @@
 <template>
-    <div class="container p-2">
+    <div class="row p-2">
         
-          <table class="table table-dark" id="mealytable">
+          <table class="table table-dark table-bordered" id="mealytable">
             <thead>
               <tr >
                 <th class="table-dark">State</th>
@@ -10,10 +10,10 @@
             </thead>
 
             <tbody>
-              <tr class="table-dark" v-for="(qstate, index) in statesQchild" :key="qstate">
-                <th class="table-dark" :id="'statename-' + index">{{ qstate }}</th>
+              <tr class="table-bordered" v-for="(qstate, index) in statesQchild" :key="qstate">
+                <th class="table-bordered" :id="'statename-' + index">{{ qstate }}</th>
                 
-                <th v-for="(sinput, index2) in inputsSchild" :key="sinput" class="table-dark">
+                <th v-for="(sinput, index2) in inputsSchild" :key="sinput" class="table-bordered">
                     <input type="text" class="form-control" :id="'nextstate-' + index + ',' + index2">
                     <input type="text" class="form-control" :id="'output-' + index + ',' + index2">
                 </th>
@@ -43,7 +43,7 @@ export default {
 
                 var stateid = document.getElementById('statename-' + i).innerHTML
 
-                //Ends at row.cells.length-1 because we already have the value of the last cell (stateoutput)
+                //Ends at row.cells.length-1 because the first cell (statename) is on the table but wasn't assigned an id
                 for (var j = 0; j < rows[i].cells.length - 1; j++) {
                     staterow['sucesor-' + j] = [
                             document.getElementById('nextstate-' + i + ',' + j).value,

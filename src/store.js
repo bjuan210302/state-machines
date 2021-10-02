@@ -1,7 +1,6 @@
 import { createStore } from "vuex" 
 import { calcRelatedEquivalentMachine } from './machineFunctions.js'
 import { calcMinimumEquivalentMachine } from './machineFunctions.js'
-//import { mealy } from './temp/parsedTables.js'
 
 const store = createStore({
    state:{
@@ -10,16 +9,38 @@ const store = createStore({
        outputsR: [],
 
        relatedequivalentMachine: {},
-       minimumEquivalentMachine: [],
+       minimumEquivalentMachine: {},
+       finalPartition: [],
+       renderOutput: false,
 
        machineType: false, //false for Mealy, true for Moore
        parsedTable: {}
       
    },
 
-   computed:{
-        getMachineType(){
-            return this.state.machineType
+   getters:{
+        machineType(state){
+            return state.machineType
+        },
+
+        parsedTable(state){
+            return state.parsedTable
+        },
+
+        relatedequivalentMachine(state){
+            return state.relatedequivalentMachine
+        },
+
+        minimumEquivalentMachine(state){
+            return state.minimumEquivalentMachine
+        },
+
+        renderOutput(state){
+            return state.renderOutput
+        },
+
+        finalPartition(state){
+            return state.finalPartition
         }
    },
 
@@ -36,20 +57,27 @@ const store = createStore({
         state.outputsR = value.replace(/\s/g, '').split(',').filter(String)
     },
 
-    setRelatedEquivalentMachine(state){
+    calcRelatedEquivalentMachine(state){
         state.relatedequivalentMachine = calcRelatedEquivalentMachine(state.parsedTable, state.machineType);
     },
 
-    setMinimumEquivalentMachine(state){
-        state.minimumEquivalentMachine = calcMinimumEquivalentMachine(state.parsedTable, state.machineType);
+    calcMinimumEquivalentMachine(state){
+        var eqMachine = calcMinimumEquivalentMachine(state.parsedTable, state.machineType)
+        state.finalPartition = eqMachine[0]
+        state.minimumEquivalentMachine = eqMachine[1]
     },
 
     setMachineType(state, value){
         state.machineType = value
+        state.renderOutput = false
     },
 
     setParsedTable(state, value){
         state.parsedTable = value
+    },
+
+    setRenderOutput(state, value){
+        state.renderOutput = value
     }
    }
 })

@@ -19,8 +19,9 @@ export function calcMinimumEquivalentMachine(parsedTable, machineType) {
     var p0 = (machineType) ? calcP0Moore(statesOutputs) : calcP0Mealy(statesOutputs)
 
     var pf = findpf(statesSuccessors, p0)
+    var newMachine = assemble(pf, statesSuccessors, statesOutputs, machineType)
 
-    return assemble(pf, statesSuccessors, statesOutputs, machineType)
+    return [pf, newMachine]
     
 }
 
@@ -158,10 +159,9 @@ function mooreAssembler(pf, statesSuccessors, statesOutputs){
         var representator = value[0]
         machine['q'+i] = {}
         machine['q'+i].stateoutput = statesOutputs[representator]
-
+        
         var aux = statesSuccessors[representator]
         aux.forEach(function(suc, j){
-            machine['q'+i].state = value
 
             //This line finds the key of the successor block of this state
             //Doing this to put the key as a the successor instead of the array itself
@@ -185,7 +185,6 @@ function mealyAssembler(pf, statesSuccessors, statesOutputs){
         machine['q'+i] = {}
         var aux = statesSuccessors[representator]
         aux.forEach(function(suc, j){
-            machine['q'+i].state = value
 
             //This line finds the key of the successor block of this state
             //Doing this to put the key as a the successor instead of the array itself
