@@ -32,7 +32,11 @@ function calcReachableStates(parsedTable, machineType) {
 
     return tree.added
 }
-
+/**
+ * 
+ * @param {Object wih the shape key: [] where a key represents a state and its value the outputs of that state} statesOutputs 
+ * @returns Object with the different outputs as keys, and the states that produce that output as values
+ */
 function calcP0Moore(statesOutputs) {
     var p0 = Object.keys(statesOutputs).reduce(
         function (groups, key) {
@@ -46,6 +50,13 @@ function calcP0Moore(statesOutputs) {
     return Object.values(p0)
 }
 
+/**
+ * Classifies the outputs in a Mealy, for example ['0','1','1'] is a posible output of a machine
+ * with 3 inputs, so it is a class i. If another state has the same exact group of outputs, both these states
+ * belong to class i.
+ * @param {Object wih the shape state: [] where a key represents a state and its value the outputs of that state.} statesOutputs 
+ * @returns Object with the output class number (i) as keys, and the states that output that class.
+ */
 function calcP0Mealy(statesOutputs) {
     var classes = {}
     var globalKey = 0
@@ -82,13 +93,20 @@ function calcP0Mealy(statesOutputs) {
     return Object.values(p0)
 }
 
+/**
+ * 
+ * @param {Object with shape state: [], where a key is a state and its value are its successor states.} stateSucessors 
+ * @param {An object with the shape i: [], where the value are the states in the i-th block of
+ * the partition.} pi
+ * @returns The final partition, when pi = pi-1
+ */
 function findpf(stateSucessors, pi) {
     var pf = {}
     var newBlocksId = 0;
 
     Object.values(pi).forEach(function (block) {
 
-        var blocktoProccess = block.slice()
+        var blocktoProccess = block.slice() //Slice beacause we do not want to edit the original copy
 
         do {
 
@@ -97,30 +115,41 @@ function findpf(stateSucessors, pi) {
             for (var i = 0; i < blocktoProccess.length;) {
                 var state = blocktoProccess[i]
 
-                if (lastKey == '') {
+                if (lastKey == '') { //First of the block, put in a new block in the new partition 'pf'
                     pf[newBlocksId] = [state]
                     blocktoProccess.shift()
                     lastKey = state
                     newBlocksId++
-                } else {
+                } else { //Not the first, so we have to compare it to the previous to see if the belong on the same block
+                    //If the belong in the same state put with it the previous one and remove it from
+                    //the block we are proccessing
                     if (shouldBeInSameBlock(stateSucessors[state], stateSucessors[lastKey], pi) == 1) {
                         pf[newBlocksId - 1].push(state)
                         blocktoProccess.splice(i, 1)
                         lastKey = state
-                    } else {
+                    } else { //If not, leave it in the block and evaluate the next
                         i++
                     }
                 }
 
             }
-
-        } while (blocktoProccess.length > 0)
+        
+        } while (blocktoProccess.length > 0)  
 
     })
 
     return (areMatrixesIdentical(pi, pf)) ? pf : findpf(stateSucessors, pf)
 }
 
+/**
+ * Compares the i-th successor in successors1 and successors1 and check they are in the same block
+ * on the partition, if this is true for all successors i, the return true
+ * @param {Object shape: {state: []}, a state and its successors} successors1 
+ * @param {Object shape: {state: []}, a state and its successors} successors2 
+ * @param {An object with the shape i: [], where the value are the states in the i-th block of
+ * the partition.} partition 
+ * @returns 1 if the state that precedes successors1 should be in the same block as the state the precedes successors 2
+ */
 function shouldBeInSameBlock(successors1, successors2, partition) {
 
     var flag = 1;
@@ -152,6 +181,14 @@ function assemble(pf, statesSuccessors, statesOutputs, machineType){
 
 }
 
+/**
+ * Puts together a set of states, its successors and its outputs
+ * @param {An object with the shape i: [], where the value are the states in the i-th block of
+ * the partition.} pf 
+ * @param {Object with shape state: [], where a key is a state and its value are its successor states.} statesSuccessors 
+ * @param {Object with shape state: [], where a key is a state and its value are its outputs.} statesOutputs 
+ * @returns Object with shape {qi: state:{ stateout, successor-i....}}
+ */
 function mooreAssembler(pf, statesSuccessors, statesOutputs){
     var machine = {}
 
@@ -176,6 +213,14 @@ function mooreAssembler(pf, statesSuccessors, statesOutputs){
     return machine
 }
 
+/**
+ * Puts together a set of states, its successors and its outputs
+ * @param {An object with the shape i: [], where the value are the states in the i-th block of
+ * the partition.} pf 
+ * @param {Object with shape state: [], where a key is a state and its value are its successor states.} statesSuccessors 
+ * @param {Object with shape state: [], where a key is a state and its value are its outputs.} statesOutputs 
+ * @returns Object with shape {qi: state:{ successor-i:{successor, output} } }
+ */
 function mealyAssembler(pf, statesSuccessors, statesOutputs){
     var machine = {}
     
@@ -203,6 +248,13 @@ function mealyAssembler(pf, statesSuccessors, statesOutputs){
     return machine
 }
 
+/**
+ * 
+ * @param {A state} state 
+ * @param {An object with the shape i: [], where the value are the states in the i-th block of
+ * the partition.} pf 
+ * @returns The block of pf where state is included
+ */
 function findBlockOf(state, pf){
     var ret = null
 
@@ -216,9 +268,10 @@ function findBlockOf(state, pf){
 }
 
 /**
- * Parsed table is an object in with the shape given by the MooreMachineTable and MealyMachineTable formatters
  * 
- * Outputs an object with the shape key: []
+ * @param {A table with general formatting, same shape as those outputed but the assemblers} parsedTable 
+ * @param {false for mealy, true for moore} machineType 
+ * @returns Outputs an object with the shape key: []
  * A key is a state and its value is an array containing the states it(the key-state) leads to
  */
 function extracStateSuccessors(parsedTable, machineType) {
@@ -243,10 +296,11 @@ function extracStateSuccessors(parsedTable, machineType) {
 }
 
 /**
- * Parsed table is an object in with the shape given by the MooreMachineTable and MealyMachineTable formatters
  * 
- * Outputs an object with the shape key: []
- * A key is a state and its value is an array containing the symbols it(the key-state) outputs.
+ * @param {A table with general formatting, same shape as those outputed but the assemblers} parsedTable 
+ * @param {false for mealy, true for moore} machineType 
+ * @returns Outputs an object with the shape key: []
+ * A key is a state and its value is an array containing the outputs it(the key-state) produces
  */
 function extractStateOutputs(parsedTable, machineType) {
     var statesOutputs = {}
