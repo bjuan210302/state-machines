@@ -1,6 +1,6 @@
 import { createStore } from "vuex" 
-import { calcRelatedEquivalentMachine } from './machineFunctions.js'
-import { calcMinimumEquivalentMachine } from './machineFunctions.js'
+import { calcRelatedEquivalentMachine } from './machine-scripts/machineFunctions.js'
+import { calcMinimumEquivalentMachine } from './machine-scripts/machineFunctions.js'
 
 const store = createStore({
    state:{
