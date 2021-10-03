@@ -6,7 +6,6 @@ const store = createStore({
    state:{
        statesQ: [],
        inputsS: [],
-       outputsR: [],
 
        relatedequivalentMachine: {},
        minimumEquivalentMachine: {},
@@ -51,10 +50,6 @@ const store = createStore({
 
     setInputsS(state, value){
         state.inputsS = value.replace(/\s/g, '').split(',').filter(String)
-    },
-
-    setOutputsR(state, value){
-        state.outputsR = value.replace(/\s/g, '').split(',').filter(String)
     },
 
     calcRelatedEquivalentMachine(state){

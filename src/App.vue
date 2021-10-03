@@ -45,7 +45,7 @@
           <div class="alert alert-secondary" role="alert">
             Minimum Equivalent Machine:
           </div>
-          <div class="alert alert-dark col-6" role="alert">
+          <div class="alert alert-secondary col-6" role="alert">
             {{ parseFinalPartition }}
           </div>
           <component :is="outputType" v-bind="outPropsMinimum"></component>
